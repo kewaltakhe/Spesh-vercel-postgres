@@ -1,6 +1,7 @@
 # build_files.sh
+pip install python-dotenv
 pip install -r requirements.txt
 
 # make migrations
-python3.9 manage.py migrate 
-python3.9 manage.py collectstatic
+python manage.py migrate 
+python manage.py collectstatic
