@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="profile">
+    <div class="profile-container">
+        <div class="profile">
+            {% if user.profile_pic %}
+                <img src="{{ user.profile_pic.url }}" alt="profilepic" class="profilepic">
+            {% else %}
+                <img src="{% static 'site_images/user.png' %}" alt="profilepic" class="profilepic">
+            {% endif %}
+            
+        </div>
+        <div class="username">
+            <div class="edit-profile-container" style="margin-top: 10px; margin-right: 5px;">
+                <a href="{% url 'edit_profile' %}"><img src="{% static 'icons/navbar_icons/edit.png' %}" class="edit-profile-icon" ></a>
+            </div>
+            
+            <h1>{{ user.username }}</h1>
+        </div>
+        <div class="user-id">@{{ user.username }}</div>
+    
+        <div class="user-bio">
+            <div class="user-bio-text">
+                {% if user.userbio %}
+                    {{ user.userbio }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="followers-followings">
+            <div class="followers" style="margin-right: 10px;" >
+                <a href="#" id="followersLink">Followers ({{ followers_count }})</a>      
+            </div>
+            <div class="followings" style="margin-left: 30px;" >
+                <a href="#" id="followingsLink">Followings({{followings_count}}) </a>
+            </div>
+        </div>
+        <div class="upload-photo-icon-container">
+            <a href="{% url 'upload_photo' %}"><img src="{% static 'icons/upload_photo.png' %}" class="upload-photo-icon"></a>
+        </div>
+        <div class="saved-uploaded">
+            <div class="uploaded"><a href="#">uploaded ({{ photo_count }})</a></div>
+            <div class="saved"><a href="#">saved</a></div>
+        </div>
+        
+    <hr class="custom-hr">
+        
+    </div>
+</div>
+
+    
+        {% if photo_count != 0 %}
+        <div class="user-photos-container">
+            {% for photo in user_photos %}
+                    <img src="{{ photo.image.url }}" class="each-photo" id="photo{{photo.id}}" onclick="showModal('{{ photo.image.url }}','{{ photo.id }}')">
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="no-media-content">
+                No photos
+            </div>
+        {% endif %}
+
+<!-- Followings Modal -->
+<div class="modal fade" id="followingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="margin-left: 10%;max-width:400px; height: 50vh;">
+            <div class="modal-header" style="align-self: center;">
+                <h5 class="modal-title" >Following</h5>
+            </div>
+            <div class="modal-body followers-modal-content-body">
+                {% for following in followings %}
+                    <div class="followers-one-user">
+                        <div class="followers-profile-pic-container">
+                            {% if following.profile_pic %}
+                                <a href="{% url 'other_profile' user_id=following.id %}">
+                                    <img src="{{ following.profile_pic.url }}" alt="profilepic"
+                                            class="followers-profile-pic "
+                                    />
+                                </a>
+                                            
+                            {% else %}  
+                                <a href="{% url 'other_profile' user_id=following.id %}">
+                                    <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                        class="followers-profile-pic "
+                                    />
+                                </a>
+                            {% endif %}
+                        </div> 
+                        <div style="display: flex; justify-content: center; align-items: center; margin-left: 10px;">
+                            <a href="{% url 'other_profile' user_id=following.id %}">{{ following.username }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+ <!-- Followers Modal -->
+
+<div class="modal fade" id="followersModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="margin-left: 10%;max-width:400px; height: 50vh;">
+            <div class="modal-header" style="align-self: center;">
+                <h5 class="modal-title" >Followers</h5>
+            </div>
+            <div class="modal-body followers-modal-content-body">
+                {% for follower in followers %}
+                    <div class="followers-one-user">
+                        <div class="followers-profile-pic-container">
+                            {% if follower.profile_pic %}
+                                <a href="{% url 'other_profile' user_id=follower.id %}">
+                                    <img src="{{ follower.profile_pic.url }}" alt="profilepic"
+                                            class="followers-profile-pic "
+                                    />
+                                </a>
+                                            
+                            {% else %}  
+                                <a href="{% url 'other_profile' user_id=follower.id %}">
+                                    <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                        class="followers-profile-pic "
+                                    />
+                                </a>
+                            {% endif %}
+                        </div> 
+                        <div style="display: flex; justify-content: center; align-items: center; margin-left: 10px;">
+                            <a href="{% url 'other_profile' user_id=follower.id %}">{{ follower.username }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Photo Modal-->
+<div class="customized modal fade" id="photoModal"   data-bs-keyboard="false" tabindex="-1"  aria-hidden="true" >
+    <div class="modal-dialog photo-modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body justify-content-end modal-photo">
+           
+            <img id="modalImage" src="" alt="Photo" class="img-fluid">
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-danger" id="delete_photo" data-dismiss="modal">Delete</button>
+          </div>
+      </div>
+</div>
+
+<!-- Delete confirmation Modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+            <p>Are you sure you want to delete this photo?</p>
+        </div>
+        <form id="confirmDeleteForm" method="post">
+            {% csrf_token %}
+            <div style="margin-bottom: 20px;">
+                <button type="button" class="btn btn-secondary" id="close-deleteConfirmModal-btn">Close</button>
+                <button type="submit" class="btn btn-danger" id="sure-delete-btn">Delete</button>
+            </div> 
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+    function showModal(imageUrl,photoId){
+        var modalImage = document.getElementById('modalImage');
+        var deletePhotoBtn = document.getElementById('delete_photo');
+        deletePhotoBtn.dataset.photoId = photoId; // Set the data attribute to the photoId
+        modalImage.src = imageUrl;
+        $('#photoModal').modal('show');
+    }
+
+    const deleteButton = document.getElementById('delete_photo');
+    deleteButton.addEventListener('click', () => {
+        $('#deleteConfirmModal').modal('show');
+        /*
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = '/delete_photo/5/';  // Update the form action with the appropriate photo ID
+        $('#deleteModal').modal('show');  // Open the modal
+        */
+    });
+
+    document.getElementById('close-deleteConfirmModal-btn').addEventListener('click', () => {
+        
+        $('#deleteConfirmModal').modal('hide');
+    });
+    document.getElementById('sure-delete-btn').addEventListener('click', () => {
+        var photoId = document.getElementById('delete_photo').dataset.photoId;
+        document.getElementById('confirmDeleteForm').action = `/delete_photo/${photoId}/`;
+
+    });
+
+    /*follower modal controllers*/
+    $(document).ready(function () {
+        $('#followersLink').click(function () {
+            $('#followersModal').modal('show');
+        });
+    });
+    /*following modal controllers*/
+    $(document).ready(function () {
+        $('#followingsLink').click(function () {
+            $('#followingsModal').modal('show');
+        });
+    });
+</script>
+{% endblock %}

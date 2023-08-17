@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="profile-container">
+    <div class="profile">
+        {% if otheruser.profile_pic %}
+            <img src="{{ otheruser.profile_pic.url }}" alt="profilepic" class="profilepic">
+        {% else %}
+            <img src="{% static 'site_images/user.png' %}" alt="profilepic" class="profilepic">
+        {% endif %}
+        
+    </div>
+    <div class="username"><h1>{{ otheruser.username }}</h1></div>
+    <div class="user-id">@{{ otheruser.username }}</div>
+
+    <div class="user-bio">
+        <div class="user-bio-text">
+            {% if otheruser.userbio %}
+                {{ otheruser.userbio }}
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="followers-followings">
+        <div class="followers" style="margin-right: 10px;" >
+            <a href="#" id="followersLink">Followers ({{ followers_count }})</a>      
+        </div>
+        <div class="followings" style="margin-left: 30px;" >
+            <a href="#" id="followingsLink">Followings({{followings_count}}) </a>
+        </div>
+    </div>
+    <button id="follow-btn" class="btn {% if already_followed %}btn-secondary{% else %}btn-primary{% endif %}" data-user-id="{{ otheruser.id }}">
+        {% if already_followed %}
+          Following
+        {% else %}
+          Follow
+        {% endif %}
+    </button>
+    
+    <div class="saved-uploaded">
+        <div class="uploaded"><a href="#">uploaded ({{ photo_count }})</a></div>
+        <div class="saved"><a href="#">saved</a></div>
+    </div>
+    
+<hr class="custom-hr">
+    
+</div>
+
+    {% if photo_count != 0 %}
+        <div class="user-photos-container">
+            {% for photo in user_photos %}
+                    <img src="{{ photo.image.url }}" class="each-photo" id="photo{{photo.id}}" onclick="showModal('{{ photo.image.url }}','{{ photo.id }}')">
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-media-content">
+            No photos
+        </div>
+    {% endif %}
+
+<!-- Followings Modal -->
+<div class="modal fade" id="followingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="margin-left: 10%;max-width:400px; height: 50vh;">
+            <div class="modal-header" style="align-self: center;">
+                <h5 class="modal-title" >Following</h5>
+            </div>
+            <div class="modal-body followers-modal-content-body">
+                {% for following in followings %}
+                    <div class="followers-one-user">
+                        <div class="followers-profile-pic-container">
+                            {% if following.profile_pic %}
+                                <a href="{% if current_user.id == following.id %}{% url 'profile' %}{% else %}{% url 'other_profile' user_id=following.id %}{% endif %}">
+                                    <img src="{{ following.profile_pic.url }}" alt="profilepic"
+                                            class="followers-profile-pic "
+                                    />
+                                </a>
+                                            
+                            {% else %}  
+                                <a href="{% if current_user.id == following.id %}{% url 'profile' %}{% else %}{% url 'other_profile' user_id=following.id %}{% endif %}">
+                                    <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                        class="followers-profile-pic "
+                                    />
+                                </a>
+                            {% endif %}
+                        </div> 
+                        <div style="display: flex; justify-content: center; align-items: center; margin-left: 10px;">
+                            <a href="{% if current_user.id == following.id %}{% url 'profile' %}{% else %}{% url 'other_profile' user_id=following.id %}{% endif %}">{{ following.username }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+ <!-- Followers Modal -->
+
+<div class="modal fade" id="followersModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="margin-left: 10%;max-width:400px; height: 50vh;">
+            <div class="modal-header" style="align-self: center;">
+                <h5 class="modal-title" >Followers</h5>
+            </div>
+            <div class="modal-body followers-modal-content-body">
+                {% for follower in followers %}
+                    <div class="followers-one-user">
+                        <div class="followers-profile-pic-container">
+                            {% if follower.profile_pic %}
+                                <a href="{% if current_user.id == follower.id %}{% url 'profile' %}{% else %}{% url 'other_profile' user_id=follower.id %}{% endif %}">
+                                    <img src="{{ follower.profile_pic.url }}" alt="profilepic"
+                                            class="followers-profile-pic "
+                                    />
+                                </a>
+                                            
+                            {% else %}  
+                                <a href="{% if current_user.id == follower.id %}{% url 'profile' %}{% else %}{% url 'other_profile' user_id=follower.id %}{% endif %}">
+                                    <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                        class="followers-profile-pic "
+                                    />
+                                </a>
+                            {% endif %}
+                        </div> 
+                        <div style="display: flex; justify-content: center; align-items: center; margin-left: 10px;">
+                            <a href="{% if current_user.id == follower.id %}{% url 'profile' %}{% else %}{% url 'other_profile' user_id=follower.id %}{% endif %}">{{ follower.username }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Unfollow modal-->
+<div class="modal fade" id="unfollowConfirmModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+    <div class="modal-dialog modal-dialog-centered" style="width: 30%;">
+      <div class="modal-content">
+        <div class="modal-body">
+            <p>Do you want to unfollow {{otheruser.username}}?</p>
+        </div>
+        <div class="d-flex justify-content-center"> <!-- Add this wrapper div -->
+            <button type="button" class="btn btn-secondary" id="unfollow-confirm-btn" style="margin-bottom: 20px;">Unfollow</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Photo Modal-->
+<div class="customized modal fade" id="photoModal"   data-bs-keyboard="false" tabindex="-1"  aria-hidden="true" >
+    <div class="modal-dialog photo-modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body justify-content-end modal-photo">
+           
+            <img id="modalImage" src="" alt="Photo" class="img-fluid">
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-danger" id="save_photo" data-dismiss="modal">Save</button>
+          </div>
+      </div>
+</div>
+
+<script>
+    function showModal(imageUrl,photoId){
+        modalImage.src = imageUrl;
+        $('#photoModal').modal('show');
+    }
+
+    $('#follow-btn').on('click', function() {
+
+        
+        var userId = $(this).data('user-id');
+        var buttonText = $(this).text().trim();
+            
+        if(buttonText === 'Follow'){
+            $.ajax({
+                url: '/follow_someone/', 
+                method: 'POST',
+                data: { 
+                    'user_id': userId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(data) {
+                    console.log(data.followers_count);
+                    $('#follow-btn').text('Following');
+                    $('#follow-btn').removeClass('btn-primary');
+                    $('#follow-btn').addClass('btn-secondary');
+                    $('#followers-count').text('Followers('+data.followers_count+')');
+                },
+                error: function(error) {
+                    console.log('not going well');
+                    console.error('Error:', error);
+                }
+            });
+        } else if (buttonText === 'Following'){
+            
+            $.ajax({
+                url: '/unfollow_someone/', 
+                method: 'POST',
+                data: { 
+                    'user_id': userId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(data) {
+                    $('#follow-btn').text('Follow');
+                    $('#follow-btn').removeClass('btn-secondary');
+                    $('#follow-btn').addClass('btn-primary');
+                    $('#followers-count').text('Followers('+data.followers_count+')');
+                },
+                error: function(error) {
+                    console.log('not going well');
+                    console.error('Error:', error);
+                }
+            });
+
+        }
+    }
+    );
+    $('#unfollow-confirm-btn').on('click', function() {
+        var userId = $(this).data('user-id');
+        var buttonText = $('#follow-btn').text().trim();
+        if(buttonText === 'Following'){
+            $.ajax({
+                url: '/unfollow_someone/', 
+                method: 'POST',
+                data: { 
+                    'user_id': userId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(data) {
+                    $('#follow-btn').text('Follow');
+                    $('#follow-btn').removeClass('btn-secondary');
+                    $('#follow-btn').addClass('btn-primary');
+                    $('#followers-count').text('Followers('+data.followers_count+')');
+                },
+                error: function(error) {
+                    console.log('not going well');
+                    console.error('Error:', error);
+                }
+            });
+
+        }
+    });
+    /*follower modal controllers*/
+    $(document).ready(function () {
+        $('#followersLink').click(function () {
+            $('#followersModal').modal('show');
+        });
+    });
+    /*following modal controllers*/
+    $(document).ready(function () {
+        $('#followingsLink').click(function () {
+            $('#followingsModal').modal('show');
+        });
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Are You Sure?</h4>
+        <p>This action is irreversible. By deleting your account, you will lose all your data and access to the platform.</p>
+        <hr>
+        <p class="mb-0">If you're certain about this, click the button below to proceed.</p>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete Account</button>
+        <a href="{% url 'profile' %}" type="btn" class="btn btn-secondary" style="color: aliceblue;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="mystyle.css">
+
+    </head>
+    <body>
+        <button onclick="myFunction()">oiii</button>
+        <div class="action">
+            <div class="profile" onclick="menuToggle()">
+                <img src="images.png" alt="profile">
+            </div>
+            <div class="menu">
+                <h3>Username</h3><span>About user</span>
+                <ul>
+                    <li><img src="user.png"><a href="#"> Profile</a></li>
+                    <li><img src="edit.png"><a href="#">Edit Profile</a></li>
+                    <li><img src="settings (1).png"><a href="#">Setting</a></li>
+                    <li><img src="question.png"><a href="#">Help</a></li>
+                    <li><img src="log-out.png"><a href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+        <script>
+            function menuToggle(){
+                const toggleMenu = document.querySelector(".menu")
+                toggleMenu.classList.toggle("active")
+            }
+        </script>
+        <script>
+            function myFunction() {
+              alert("Hello! I am an alert box!");
+            }
+            </script>
+        <script>
+            $(document).click(function() { 
+                alert("shsdjflsjfdl")
+});
+        </script>
+            
+    </body>
+
+</html>

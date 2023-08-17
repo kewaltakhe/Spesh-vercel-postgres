@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}" >
+        <link type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'css/mainstyle.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@500;700&family=Lobster&display=swap" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-fixed-top navbar-dark bg-dark" style="width:100%;z-index:100; ">
+            <div class="container-fluid justify-content-start" style="margin: 1px; margin-left: 20px;">
+                <a href="{% url 'home' %}" class="navbar-brand nav-link alkatra-700"><h2 style="margin-bottom: -3px;">Spesh</h2></a>
+                <ul class="navbar-nav">
+                    <li class="nav-item" >
+                        <a href="#" class="nav-link">About</a>
+                    </li>
+                    <li class="nav-item" >
+                        <a href="#" class="nav-link">People</a>
+                    </li>
+                </ul>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent"  style="margin-right: 20px;">
+                    <ul class="navbar-nav nav pull-right">
+                        {% if user.is_authenticated %}
+                        <li>
+                            <div class="search-box">
+                                <form class="d-flex user-search-form" method="get" action="{% url 'usersearch' %}" style="margin: 0%;">
+                                    <input type="text" class="form-control" name="searchterm" placeholder="search a username">
+                                    <button class="btn btn-dark">search</button>
+                                </form>
+                            </div>
+                            
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            
+                            {% if user.is_authenticated %}
+                        <div class="container-fluid action" style="margin:0;width: fit-content; " >
+                            <div class="profile" onclick="menuToggle()">
+                                {% if user.profile_pic %}
+                                    <div class="navbar-profile-pic-container">
+                                        <img src="{{ user.profile_pic.url }}" alt="profilepic"
+                                         class="navbar-profile-pic"
+                                        /> 
+                                    </div>
+                                    
+                                {% else %}
+                                    <div class="navbar-profile-pic-container">
+                                        <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                        class="navbar-profile-pic" style="transform: scale(1.2)"
+                                        />
+                                        /> 
+                                    </div>
+                                    
+                                {% endif %}
+                            </div>
+                            <div class="menu">
+                                <h3>{{ user.username }}</h3>
+                                <ul style="padding-left: 0px;" >
+                                    <li><a href="{% url 'profile' %}"><img src="{% static 'icons/navbar_icons//user.png' %}">Profile</a></li>
+                                    <li><a href="{% url 'logout' %}"><img src="{% static 'icons/navbar_icons/log-out.png' %}">Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        {% else %}
+                            <div class="button">
+                                <a href="{% url 'login' %}"><button class="btn btn-secondary" type="button"> Sign In</button></a>
+                                <a href="{% url 'signup' %}"><button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"> Sign Up</button></a>
+                            </div>
+                        {% endif %}
+                        
+                    </li>
+                </ul>
+                </div>
+
+            </ul>
+            </div>
+
+        </nav>
+        
+        <div>
+            {% block content %}
+            {% endblock content %}
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script>
+            function menuToggle(){
+                const toggleMenu = document.querySelector(".menu")
+                toggleMenu.classList.toggle("active")
+            }
+        </script>
+    </body>
+</html>

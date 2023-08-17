@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    
+    <div class="search-result-page">
+        <h3>Search Results</h3>
+        {% if results %}
+                {% for user in results %}
+                
+                <div class="search-result-item">
+                    {% if logged_user.id == user.id %}
+                    <a href="{% url 'profile' %}">
+                        <div class="search-result-item-content">
+                            {% if user.profile_pic %}
+                                <div class="search-result-item-profile-pic-container">
+                                    <img src="{{ user.profile_pic.url }}" alt="profilepic"
+                                        class="search-result-item-profile-pic"
+                                    /> 
+                                </div>
+                                        
+                            {% else %}
+                                <div class="search-result-item-profile-pic-container">
+                                    <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                        class="search-result-item-profile-pic"
+                                        alt="avatar image"
+                                        height="40"
+                                    />
+                                </div>
+                            {% endif %}
+                            <div style="margin-left: 10px;">
+                                {{ user.username }}
+                            </div>
+                        </div>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'other_profile' user_id=user.id %}">
+                        <div class="search-result-item-content">
+                            {% if user.profile_pic %}
+                                <div class="search-result-item-profile-pic-container">
+                                    <img src="{{ user.profile_pic.url }}" alt="profilepic"
+                                        class="search-result-item-profile-pic"
+                                    /> 
+                                </div>
+                                        
+                            {% else %}
+                                <div class="search-result-item-profile-pic-container">
+                                    <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                        class="search-result-item-profile-pic"
+                                        alt="avatar image"
+                                        height="40"
+                                    />
+                                </div>
+                                
+                            {% endif %}
+                            <div style="margin-left: 10px;">
+                                {{ user.username }}
+                            </div>
+                        </div>
+                        </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="search-result-item">
+                    <h3>No results</h3>
+                </div>
+                
+            {% endif %}
+    </div>
+
+
+{% endblock %}

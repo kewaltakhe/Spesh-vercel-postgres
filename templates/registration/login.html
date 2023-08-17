@@ -1,0 +1,24 @@
+{% extends 'account_base.html' %}
+{% block content %}
+<div class="container d-flex justify-content-center" style="min-height: 100vh; margin-top: 90px;margin-right: 0px;">
+    <div class="login-container">
+        <div class="row">
+            <div>
+                <div class="logo-container">
+                <h1 class=" alkatra-500 ">Spesh</h1>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <p>Login to Spesh</p>
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <p>New to Spesh? <a href="#">Create an account.</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+<div class="container-homefeed-page" style="z-index: 1;">
+    <div class="feed-all-images">
+        {% for photo in feedpage_photos %}
+        <div class="feed-image-container">
+            <div class="feed-image-user-details">
+                <div>
+                    {% if photo.user.profile_pic %}
+                        <div class="feed-photo-profile-pic-container">
+                            <a href="{% url 'other_profile' user_id=photo.user.id %}">
+                            <img src="{{ photo.user.profile_pic.url }}" alt="profilepic"
+                                    class="feed-photo-profile-pic "
+                            /> </a>
+                        </div>
+                                        
+                    {% else %}
+                        <div class="feed-photo-profile-pic-container">
+                            <a href="{% url 'other_profile' user_id=photo.user.id %}">
+                            <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                    class="feed-photo-profile-pic "
+                            /> </a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="feed-photo-profile-container">
+                    <a href="{% url 'other_profile' user_id=photo.user.id %}">{{ photo.user.username }}</a>
+                </div>
+                <div style="margin-top: -5px; margin-left: 5px;">
+                    <span style="font-size: 24px; font-weight: bold;">.</span>
+                </div>
+                <div class="feed-photo-date-container">
+                    {{ photo.created_at|timesince }}
+                </div>
+            </div>
+            <div class="feed-image-photo">
+                <img src="{{ photo.image.url }}" alt="">
+            </div>   
+        </div>
+        {% endfor %}
+        <div class="follow-for-more" style="text-align: center;">
+            <h3>Follow people for more content</h3>
+        </div>
+    </div>
+    <div class="feed-suggestion">
+        <div class="suggestion-heading">
+            <div style="margin-top: -10px;">
+                suggestions
+            </div>
+            
+        </div>
+        <div class="suggest-users">
+            {% for user in suggested_users %}
+                <div class="one-suggested-user" >
+                    <div class="suggestion-profile-pic-container">
+                        {% if user.profile_pic %}
+                            <a href="{% url 'other_profile' user_id=user.id %}">
+                                <img src="{{ user.profile_pic.url }}" alt="profilepic"
+                                        class="suggestion-profile-pic "
+                                />
+                            </a>
+                                        
+                        {% else %}  
+                            <a href="{% url 'other_profile' user_id=user.id %}">
+                                <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                    class="suggestion-profile-pic "
+                                />
+                            </a>
+                        {% endif %}
+                    </div>  
+                    <a href="{% url 'other_profile' user_id=user.id %}"><div style="margin-top: -7px;">{{ user.username }}</div></a>
+                    
+                    
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+</div>
+
+{% endblock %}
