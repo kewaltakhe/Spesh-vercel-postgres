@@ -1,0 +1,24 @@
+{% load static %}
+{% for follower in followers %}
+                    <div class="followers-one-user">
+                        <div class="followers-profile-pic-container">
+                            {% if follower.profile_pic %}
+                                <a href="{% if current_user.id == follower.id %}{% url 'profile' %}{% else %}{% url 'other_profile' user_id=follower.id %}{% endif %}">
+                                    <img src="{{ follower.profile_pic.url }}" alt="profilepic"
+                                            class="followers-profile-pic "
+                                    />
+                                </a>
+                                            
+                            {% else %}  
+                                <a href="{% if current_user.id == follower.id %}{% url 'profile' %}{% else %}{% url 'other_profile' user_id=follower.id %}{% endif %}">
+                                    <img src="{% static 'site_images/images.png' %}" alt="profilepic"
+                                        class="followers-profile-pic "
+                                    />
+                                </a>
+                            {% endif %}
+                        </div> 
+                        <div style="display: flex; justify-content: center; align-items: center; margin-left: 10px;">
+                            <a href="{% if current_user.id == follower.id %}{% url 'profile' %}{% else %}{% url 'other_profile' user_id=follower.id %}{% endif %}">{{ follower.username }}</a>
+                        </div>
+                    </div>
+{% endfor %}

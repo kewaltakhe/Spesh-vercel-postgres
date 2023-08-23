@@ -180,11 +180,21 @@
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
                 success: function(data) {
-                    console.log(data.followers_count);
+                    console.log("follow button clicked"+data.followers_count+" this is follower count");
                     $('#follow-btn').text('Following');
                     $('#follow-btn').removeClass('btn-primary');
                     $('#follow-btn').addClass('btn-secondary');
-                    $('#followers-count').text('Followers('+data.followers_count+')');
+                    $('#followersLink').text('Followers('+data.followers_count+')');
+                    $.ajax({
+                        url: '/get_followers/' + userId,
+                        method: 'GET',
+                        success: function(data) {
+                            $('.followers-modal-content-body').html(data.followers_html);
+                        },
+                        error: function(error) {
+                            console.error('Error:', error);
+                        }
+                    });
                 },
                 error: function(error) {
                     console.log('not going well');
@@ -192,54 +202,43 @@
                 }
             });
         } else if (buttonText === 'Following'){
-            
-            $.ajax({
-                url: '/unfollow_someone/', 
-                method: 'POST',
-                data: { 
-                    'user_id': userId,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-                success: function(data) {
-                    $('#follow-btn').text('Follow');
-                    $('#follow-btn').removeClass('btn-secondary');
-                    $('#follow-btn').addClass('btn-primary');
-                    $('#followers-count').text('Followers('+data.followers_count+')');
-                },
-                error: function(error) {
-                    console.log('not going well');
-                    console.error('Error:', error);
-                }
+            $('#unfollowConfirmModal').modal('show');
+            $('#unfollow-confirm-btn').on('click', function() {
+                $.ajax({
+                    url: '/unfollow_someone/', 
+                    method: 'POST',
+                    data: { 
+                        'user_id': userId,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function(data) {
+                        $('#follow-btn').text('Follow');
+                        $('#follow-btn').removeClass('btn-secondary');
+                        $('#follow-btn').addClass('btn-primary');
+                        $('#followersLink').text('Followers('+data.followers_count+')');
+                        $('#unfollowConfirmModal').modal('hide');
+                        $.ajax({
+                            url: '/get_followers/' + userId,
+                            method: 'GET',
+                            success: function(data) {
+                                $('.followers-modal-content-body').html(data.followers_html);
+                            },
+                            error: function(error) {
+                                console.error('Error:', error);
+                            }
+                        });
+                    },
+                    error: function(error) {
+                        console.log('not going well');
+                        console.error('Error:', error);
+                    }
+                });
             });
 
         }
     }
     );
-    $('#unfollow-confirm-btn').on('click', function() {
-        var userId = $(this).data('user-id');
-        var buttonText = $('#follow-btn').text().trim();
-        if(buttonText === 'Following'){
-            $.ajax({
-                url: '/unfollow_someone/', 
-                method: 'POST',
-                data: { 
-                    'user_id': userId,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-                success: function(data) {
-                    $('#follow-btn').text('Follow');
-                    $('#follow-btn').removeClass('btn-secondary');
-                    $('#follow-btn').addClass('btn-primary');
-                    $('#followers-count').text('Followers('+data.followers_count+')');
-                },
-                error: function(error) {
-                    console.log('not going well');
-                    console.error('Error:', error);
-                }
-            });
-
-        }
-    });
+    
     /*follower modal controllers*/
     $(document).ready(function () {
         $('#followersLink').click(function () {

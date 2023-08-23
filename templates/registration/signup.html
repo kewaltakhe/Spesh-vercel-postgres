@@ -10,10 +10,14 @@
                 </div>
             </div>
         <h2>Create an Account</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p   }}
-            <button type="submit">Sign Up</button>
-        </form>
+        <div class="col-sm-6">
+            <form method="post" class="form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+            <p>Already have an account?<a href="{% url 'signup' %}"> Log in.</a></p>
+        </div>
+        
 </div>
 {% endblock %}

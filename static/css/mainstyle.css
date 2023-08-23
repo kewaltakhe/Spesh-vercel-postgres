@@ -212,7 +212,7 @@ a:active {
     width: 100%; /* Make the image fill the container */
     height: 100%;
     object-fit: cover;
-    transform: scale(1.4); /* Adjust the scale value as needed */
+    transform: scale(1.2); /* Adjust the scale value as needed */
 }
 .profile-container .user-bio .user-bio-text {
     word-wrap: break-word;
@@ -236,6 +236,7 @@ a:active {
 /*Gallery*/
 .user-photos-container{
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
     margin-left: 144px;
     margin-right: 20px;
@@ -525,7 +526,7 @@ a:active {
     width: 100%; /* Make the image fill the container */
     height: 100%;
     object-fit: cover;
-    transform: scale(1.4);
+    transform: scale(1.25);
     margin-top: -14px;
 }
 /*end suggestion*/
@@ -563,6 +564,6 @@ a:active {
     position: absolute;
     top: 200px;
     left: 200px;
-    color: #d0d2d7;
+    color: #292a2d;
     font-size: 30px;
 }

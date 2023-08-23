@@ -6,7 +6,7 @@ from .models import Follow
 from django.http import JsonResponse
 from django.utils.crypto import get_random_string
 from django.http import HttpResponseForbidden
-
+from django.template.loader import render_to_string
 def index_page_view(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -29,8 +29,7 @@ def userprofile_view(request):
     following_user_ids = Follow.objects.filter(follower=login_user).values_list('following', flat=True)
     followings = CustomUser.objects.filter(id__in=following_user_ids)
 
-    user_photos = PhotoModel.objects.filter(user=login_user)
-
+    user_photos = PhotoModel.objects.filter(user=login_user).order_by('-created_at')
     photo_count = user_photos.count()
     return render(request,'logged_in_pages/user_profile.html',{'current_user':login_user,'user_photos':user_photos,'photo_count':photo_count,
                                                                'followers':followers,'followings':followings
@@ -84,7 +83,7 @@ def othersprofile_view(request,user_id):
     following_user_ids = Follow.objects.filter(follower=user).values_list('following', flat=True)
     followings = CustomUser.objects.filter(id__in=following_user_ids)
 
-    user_photos = PhotoModel.objects.filter(user=user)
+    user_photos = PhotoModel.objects.filter(user=user).order_by('-created_at')
     photo_count = user_photos.count()
     followers_count = str(followers.count())
     followings_count = str(followings.count())
@@ -102,6 +101,15 @@ def othersprofile_view(request,user_id):
                                                                  'followers':followers,'followings':followings
                                                                ,'followers_count':followers_count,'followings_count':followings_count
                                                                ,'already_followed':already_followed})
+
+@login_required
+def get_followers_view(request,user_id):
+    user = CustomUser.objects.get(id=user_id)
+    follower_user_ids = Follow.objects.filter(following=user).values_list('follower', flat=True)
+    followers = CustomUser.objects.filter(id__in=follower_user_ids)
+
+    followers_html = render_to_string('logged_in_pages/followers_list_partial.html', {'followers': followers})
+    return JsonResponse({'followers_html': followers_html})
 
 @login_required
 def usersearch_view(request):
