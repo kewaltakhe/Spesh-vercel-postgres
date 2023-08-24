@@ -88,6 +88,15 @@ DATABASES = {'default': dj_database_url.config(default=os.environ['DATABASE_URL'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
+##cloudinary
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME' : os.environ['CLOUD_NAME'],
+    'API_KEY' : os.environ['CLOUD_API_KEY'],
+    'API_SECRET' : os.environ['CLOUD_API_SECRET']
+}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
