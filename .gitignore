@@ -1,3 +1,6 @@
 .env
 media/photos
 media/profile_pics
+Pipfile
+Pipfile.lock
+wireframes
